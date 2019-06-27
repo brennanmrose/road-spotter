@@ -4,22 +4,10 @@ class ReportedIssuesController < ApplicationController
 	def index
 		if params[:category_id] && find_category
 			@reported_issues = @category.reported_issues
-			respond_to do |format|
-				format.html 
-				format.json { render json: @reported_issues }
-			end
 		elsif params[:postal_code]
 			@reported_issues = ReportedIssue.by_postal_code(params[:postal_code])
-			respond_to do |format|
-				format.html 
-				format.json { render json: @reported_issues }
-			end
 		else
 			@reported_issues = ReportedIssue.all
-			respond_to do |format|
-				format.html 
-				format.json { render json: @reported_issues }
-			end
 		end
 	end
 
@@ -35,10 +23,7 @@ class ReportedIssuesController < ApplicationController
 	def create
 		@reported_issue = current_user.reported_issues.build(reported_issue_params)
 		if @reported_issue.save
-			respond_to do |format| 
-				format.html { redirect_to reported_issue_path(@reported_issue) }
-				format.json { render json: @reported_issue }
-			end
+			redirect_to reported_issue_path(@reported_issue)
 		else
 			@reported_issue.build_category unless @reported_issue.category
 			render :new
@@ -47,10 +32,6 @@ class ReportedIssuesController < ApplicationController
 
 	def show
 		find_reported_issue
-		respond_to do |format|
-			format.html
-			format.json { render json: @reported_issue }
-		end
 	end
 
 	def edit
@@ -60,10 +41,7 @@ class ReportedIssuesController < ApplicationController
 	def update
 		find_reported_issue
 		if valid_user? && @reported_issue.update(reported_issue_params)
-			respond_to do |format| 
-				format.html { redirect_to reported_issue_path(@reported_issue) }
-				format.json { render json: @reported_issue }
-			end
+			redirect_to reported_issue_path(@reported_issue)
 		else
 			render :edit
 		end
